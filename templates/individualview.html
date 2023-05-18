@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Individual Subject View</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel = "icon" type = "image/png" href = "{{ url_for('static',filename='styles/pie-chart.png')}}">
+
+
+      <link href="https://fonts.googleapis.com/css2?family=Baloo+Paaji+2:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/assets/fonts/fontawesome-all.min.css')}}">
+      <link rel="stylesheet" href="{{ url_for('static',filename='styles/assets/bootstrap/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <style>
+body{
+font-family: 'Baloo Paaji 2',cursive;
+border-style: none;
+border-top-width: 30px;
+margin: 15px;
+font-size:20px;
+background-color: #F2F3F4;'
+}
+.form-control {
+  display: inline;
+  width: 16%;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+table {
+border-collapse: collapse;
+font-size: 17px;
+width:30%;
+
+text-align: center;
+border-radius: 1em;
+}
+table, td, th {
+border: 1px solid black;
+}
+td,th{
+    padding: 10px;
+}
+
+
+@media only screen and (max-width:600px) {
+.form-control {
+  display: inline;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+}
+</style>
+     <script type = "text/javascript" src = "https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+<h2>Individual Subject View</h2>
+
+<div class="container-fluid">
+<div class="row">
+      <div class="col-sm-4">
+<select class="form-control" id="branch" onchange="reset(),selectdata(this.value)" style="width:80%">
+    <option value="0">Select Branch</option>
+    <option value="CSE">CSE</option>
+    <option value="ECE">ECE</option>
+    <option value="IT">IT</option>
+    <option value="CIVIL">CIVIL</option>
+    <option value="MECHANICAL">MECHANICAL</option>
+</select><span  style="color:red">*</span>
+      </div>
+  <div class="col-sm-4">
+  <select name="year" id="batch" class="form-control"  style="width:80%">
+  <option value="">Select Batch</option>
+</select><span  style="color:red">*</span>
+  </div>
+  <div class="col-sm-4">
+      <select class="form-control" id="sem"  style="width:80%">
+    <option value="">Select Semester</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+</select><span  style="color:red">*</span>
+  </div>
+
+  <div class="col-sm-4">
+  <select class="form-control" id="section" onchange="getsub()"  style="width:80%">
+    <option>Select Section</option>
+</select><span  style="color:red">*</span>
+  </div>
+     <div class="col-sm-4">
+      <select class="form-control" id="section2"  style="width:80%">
+    <option>Select Section</option>
+</select>
+ </div>
+  <div class="col-sm-4">
+
+      <select class="form-control" id="subject"  style="width:80%">
+    <option>Select Subject</option>
+</select><span  style="color:red">*</span>
+ </div>
+</div>
+</div>
+<br>
+<button type="submit" id="submit" class="btn btn-primary shadow" value="Submit" onclick="getindiview()" style="height:36px;font-size: 16px;">Submit</button>
+<button type="submit" id="download" class="btn btn-success shadow" value="Submit" onclick="totalviewdownload()" style="height:36px;font-size: 16px;margin-left: 20px;display: none"><i class="fa fa-download"></i> Download</button>
+<br>
+<span id="fetch" style="display: none"> Fetching Subject data...  <i class="fa fa-circle flash animated infinite" style="color: #fbae17;"></i></span>
+<br><br>
+<div id="indiview"  style="overflow-x:auto;">
+
+</div>
+<br>
+<br>
+<script src="{{ url_for('static',filename='styles/assets/js/jquery.min.js') }}"></script>
+<script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+<script>
+    function reset()
+    {
+            document.getElementById('section').selectedIndex = 0
+            document.getElementById('section2').selectedIndex = 0
+            document.getElementById('sem').selectedIndex = 0
+            document.getElementById('batch').selectedIndex = 0
+    }
+    function selectdata(value)
+    {
+        if (value!=""){
+            var br=value
+            var sectionop="<option value='0'>Select Section</option>"
+            var batchop="<option value=''>Select Batch</option>"
+             for(var y = 2017;y <= 2100;y++)
+             {
+            batchop+="<option value='"+(y+'-'+(y+4))+"'>"+(y+'-'+(y+4))+"</option>"
+             document.getElementById('batch').innerHTML=batchop
+            }
+            if (br=="CSE")
+            {
+                var cs=['B1','B2','B3','B4','B5','B6','B7','B8','B9','B10','B11','B12','B13','B14','B15','B16','B17','B18','B19','B20']
+                for(var drop=0;drop<cs.length;drop++)
+                {
+                    sectionop+="<option value='"+cs[drop]+"'>"+cs[drop]+"</option>"
+                }
+                document.getElementById('section').innerHTML=sectionop
+                document.getElementById('section2').innerHTML=sectionop
+            }
+            else if(br=="ECE")
+            {
+              var cs=['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10']
+                for(var drop=0;drop<cs.length;drop++)
+                {
+                    sectionop+="<option value='"+cs[drop]+"'>"+cs[drop]+"</option>"
+                }
+                document.getElementById('section').innerHTML=sectionop
+                  document.getElementById('section2').innerHTML=sectionop
+            }
+            else if(br=="IT")
+            {
+              var cs=['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10']
+                for(var drop=0;drop<cs.length;drop++)
+                {
+                    sectionop+="<option value='"+cs[drop]+"'>"+cs[drop]+"</option>"
+                }
+                document.getElementById('section').innerHTML=sectionop
+                  document.getElementById('section2').innerHTML=sectionop
+            }
+            else if(br=="CIVIL")
+            {
+              var cs=['G1','G2','G3','G4','G5','G6','G7','G8','G9','G10']
+                for(var drop=0;drop<cs.length;drop++)
+                {
+                    sectionop+="<option value='"+cs[drop]+"'>"+cs[drop]+"</option>"
+                }
+                document.getElementById('section').innerHTML=sectionop
+                  document.getElementById('section2').innerHTML=sectionop
+            }
+            else if(br=="MECHANICAL")
+            {
+              var cs=['H1','H2','H3','H4','H5','H6','H7','H8','H9','H10']
+                for(var drop=0;drop<cs.length;drop++)
+                {
+                    sectionop+="<option value='"+cs[drop]+"'>"+cs[drop]+"</option>"
+                }
+                document.getElementById('section').innerHTML=sectionop
+                  document.getElementById('section2').innerHTML=sectionop
+            }
+        }
+    }
+function getsub()
+{
+    var batch = document.getElementById('batch').value
+    var section = document.getElementById('section').value
+    var branch = document.getElementById('branch').value
+    var sem = document.getElementById('sem').value
+    var sectionop="<option value=''>Loading...</option>"
+     document.getElementById('subject').innerHTML=sectionop
+    if(branch && batch &&  section && sem)
+    {
+        $.ajax({
+                url: "/getsubject",
+                method: "POST",
+                data: {batch: batch, section: section, branch: branch,sem:sem},
+                cache: false,
+                success: function (res) {
+                    if(res!='Data Not Found.Please Generate..') {
+                        var s = JSON.parse(res);
+                        var sectionop="<option value=''>Select Subject</option>"
+                        for (var drop = 0; drop < s.length; drop++) {
+                            sectionop += "<option value='" + s[drop] + "'>" + s[drop] + "</option>"
+                        }
+                         document.getElementById('subject').innerHTML=sectionop
+                    }
+                    else
+                    {
+                        alert(res);
+                        var sectionop="<option value=''>Not found</option>"
+                        document.getElementById('subject').innerHTML=sectionop
+                    }
+
+                }
+            });
+
+    }
+
+}
+function getindiview()
+{
+    var batch = document.getElementById('batch').value
+    var section = document.getElementById('section').value
+    var section2 = document.getElementById('section2').value
+    var branch = document.getElementById('branch').value
+    var sub=document.getElementById('subject').value;
+    var sem=document.getElementById('sem').value;
+     $('#fetch').show();
+    if(branch && batch && section && sem)
+    {
+        if(section!=section2)
+        {
+               $.ajax({
+                url: "/indiview",
+                method: "POST",
+                data: {batch: batch, section: section, branch: branch,sem:sem,sub:sub,section2:section2},
+                cache: false,
+                success: function (res) {
+                     $('#fetch').hide();
+                    $('#indiview').html(res);
+                }
+            });
+        }
+        else
+        {
+            alert('Sections could not be same')
+            $('#fetch').hide();
+        }
+
+    }
+    else
+    {
+        alert("Please select all options")
+    }
+}
+</script>
+
+</body>
+</html>

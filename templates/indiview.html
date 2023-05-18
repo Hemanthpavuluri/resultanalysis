@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type = "text/javascript" src = "https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+<center><h3>Subject Name: {{ subjectn }}</h3></center>
+{%  if indili %}
+<table border="1">
+    <th style="background-color:#FAD7A0">Roll Number</th>
+    <th style="background-color:#FAD7A0">Grade</th>
+    <tr>
+    {% for k in indili %}
+      <td>{{ k['rollnum'] }}</td>
+      <td>{{ k['grade'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+ {% else %}
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <table border="1" style="width:70%">
+            <th style="background-color:#FAD7A0">Roll Number</th>
+            <th style="background-color:#FAD7A0">Grade</th>
+             <tr>
+            {% for k in indili1 %}
+              <td>{{ k['rollnum'] }}</td>
+              <td>{{ k['grade'] }}</td>
+            </tr>
+             {% endfor %}
+            </table>
+        </div>
+     <div class="col">
+            <table border="1" style="width:70%">
+            <th style="background-color:#FAD7A0">Roll Number</th>
+            <th style="background-color:#FAD7A0">Grade</th>
+             <tr>
+            {% for l in indili2 %}
+              <td>{{ l['rollnum'] }}</td>
+              <td>{{ l['grade'] }}</td>
+            </tr>
+             {% endfor %}
+            </table>
+        </div>
+    </div>
+    </div>
+{%  endif %}
+</table>
+<hr>
+<table class="barcharttable" style="border: none;">
+            <tr style="border: none;">
+              <td id="chart1" style="border: none;"></td>
+              <td id="chart2" style="border: none;"></td>
+          </tr>
+    </table>
+
+<script type = "text/javascript">
+var ele=0;
+var lielem=['chart1','chart2'];
+function drawChart(gl,su,stdp,pas) {
+var data = google.visualization.arrayToDataTable([
+          ['Grade','Count',{ role: 'style' }],
+          ['O',gl[0],'#4285f4'],
+          ['A+',gl[1],'#4285f4'],
+          ['A',gl[2],'#4285f4'],
+          ['B+',gl[3],'#4285f4'],
+          ['B',gl[4],'#4285f4'],
+          ['C',gl[5],'#4285f4'],
+          ['P',gl[6],'#4285f4'],
+          ['F',gl[7],'#4285f4'],
+          ['No Result',{{ nore }},'#4285f4'],
+          ['Number of students passed',stdp,'#4285f4'],
+          ['Total Strength',{{ ttstd }},'#4285f4'],
+          ['Pass%',pas,'#4285f4'],
+        ]);
+
+var options =
+{
+	title:su,
+    'width':800,
+    'height':400,
+    'margin':0,
+       titleTextStyle: {
+            color: "#000",
+            fontSize:20,},
+
+        hAxis: {
+            title:'Grade',
+            slantedText:true,
+            slantedangle:90,
+
+        titleTextStyle: {
+            color: "#000",
+            fontName: "Arial",
+            fontSize: 16,
+            italic: false,},
+
+        textStyle: {
+               color: '#000',
+               fontSize: 13,
+               fontName: "Arial",},
+    },
+
+    vAxis: {
+    	title:'Count',
+    	titleTextStyle: {
+            color: "#000",
+            fontName: "Arial",
+            fontSize: 16,
+            italic: false,},
+        textStyle: {
+                color: '#000',
+                fontSize: 13,
+                fontName: 'Arial',},
+    },
+
+   bar: { groupWidth: '70%' },
+   legend: { position: "none" },
+};
+
+var container = document.getElementById(lielem[ele]).appendChild(document.createElement('span'));
+var chart = new google.visualization.ColumnChart(container);
+chart.draw(data, options);
+ele=ele+1;
+}
+
+</script>
+
+
+<script>
+google.charts.load('current', {packages: ['corechart']});
+
+{% for t in subname %}
+   google.charts.setOnLoadCallback(function() {
+       {% set y = loop.index - 1 %}
+       var stdp= {{studentp[y]|tojson}};
+       var pas={{ passpercent[y]|tojson }};
+       var su={{ t|tojson }};
+     drawChart( {{ gradc[t]}},su,stdp,pas)
+ });
+{% endfor %}
+</script>
+</body>
+</html>

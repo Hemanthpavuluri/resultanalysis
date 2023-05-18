@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Result Analysis</title>
+    <link rel = "icon" type = "image/png" href = "{{ url_for('static',filename='styles/pie-chart.png')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Paaji+2:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/assets/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/assets/css/Navigation-Clean.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/assets/css/styles.css')}}">
+<style>
+.card
+{
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+margin:10px;
+}
+body{
+font-family: 'Baloo Paaji 2',cursive;	
+border-style: none;
+border-top-width: 30px;
+margin: 0px;
+font-size:20px;
+/*background-color: #F2F3F4;*/
+}
+.navigation-clean
+{
+  box-shadow: 5px 2.5px #88888888;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+ }
+
+#load
+{
+    display: none;
+}
+#loadp
+{
+    display: none;
+}
+#done
+{
+    display: none;
+}
+
+
+</style>
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean">
+        <div class="container-fluid">
+        	<img src="{{ url_for('static',filename='styles/pie-chart.png')}}"/>  <a class="navbar-brand" href="/" style="font-size:25px">Result Analysis</a>
+        	<button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
+        		<span class="sr-only">Toggle navigation</span>
+        		<span class="navbar-toggler-icon"></span>
+        	</button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="/totalview" style="color: rgb(1,13,23);">Total Semester View</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/individualview" style="color: rgb(1,8,14);">Individual Subject View</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/studentperformance" style="color: rgb(1,7,13);">Student Performance</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/graphicalview" style="color: rgb(1,7,13);">View Graphical only</a></li>
+                    <li class="nav-item dropdown"><a class="nav-link" data-toggle="dropdown" aria-expanded="false" href="#"> <img src="{{ url_for('static',filename='styles/profile.png')}}" style="height: 31px"/></a>
+                        <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item">Name</a><a class="dropdown-item" href="#">Reset Password</a><a class="dropdown-item" href="#">Logout</a></div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+<br>
+<div class="container">  
+       <h2 style="text-align: center">Main Console</h2>
+<div class="row">
+    <div class="card">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs" id="list" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" href="#sectionw" role="tab" aria-controls="sectionw" aria-selected="true" style="color:#D2691E">Generate Result Data</a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link"  href="#payapp" role="tab" aria-controls="payapp" aria-selected="false" style="color: #D2691E">Predict Subject Grade</a>
+            </li>        
+          </ul>
+        </div>
+    <div class="card-body">
+         <div class="tab-content mt-3">
+            <div class="tab-pane active" id="sectionw" role="tabpanel">
+            <div class="col-lg-12 text-center">
+            <h3 class="text section-heading footer-font">Section-wise Registerations</h3>
+            </div>
+            <br>
+        <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                 <select class="form-control" required id="branch" name="branch" onchange="reset(),getsec(this.value,'batch')" style="width:100%">
+                <option value="">Select Branch</option>
+                <option value ="CSE">CSE</option>
+                <option value ="ECE">ECE</option>
+                <option value ="IT">IT</option>
+                <option value ="CIVIL">CIVIL</option>
+                <option value ="MECHANICAL">MECHANICAL</option>
+                </select>
+            </div>
+            <div class="col-sm">
+                 <select class="form-control" required id="batch" name="batch" style="width:100%">
+                <option value="">Select Batch</option>
+                </select>
+            </div>
+            <div class="col-sm">
+                <select class="form-control" required id="sem" style="width:100%">
+                <option value="">Select Semester</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                </select>
+            </div>
+
+            <div class="col-sm">
+               <select class="form-control" required id="section" name="section" style="width:100%">
+                <option value="">Select Section</option>
+                </select>
+            </div>
+
+
+        </div>
+    <br>
+        <label>Enter Ending Roll Number: </label>  <input type="text" id="rollnum" style="height: 35px" placeholder="rollnumber(12 digit)" required autocomplete="off" maxlength="12">
+    <br><br>
+        <label>Count of Missing Roll Numbers: </label>  <input type="text" id="missnum" style="height: 35px" autocomplete="off" maxlength="3">
+    <br><br>
+    <button type="submit"  class="btn btn-primary shadow" value="Submit" id="submit" onclick="gen()">Generate</button>
+        <br><span id="load">  Extracting data... Please wait. <img src="{{ url_for('static',filename='styles/loader.gif') }}" style="width:26px;height:26px;" /></span>
+        <span id="done">  </span><img id="completed" src="{{ url_for('static',filename='styles/check-circle.gif') }}" style="width:27px;height:27px;display: none" />
+    </div>
+</div>
+     <div class="tab-pane" id="payapp" role="tabpanel" aria-labelledby="objective-tab">  
+
+         <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <h3 class="text section-heading footer-font">Predict Subject Grade</h3>
+                    </div>
+
+                </div>
+                <br>
+                <div class="row">
+                     <div class="col-sm">
+                          <select class="form-control" id="branchp" onchange="reset(),getsec('','batchp')" style="width:100%">
+                        <option value="0">Select Branch</option>
+                        <option value="CSE">CSE</option>
+                        <option value="ECE">ECE</option>
+                        <option value="IT">IT</option>
+                        <option value="CIVIL">CIVIL</option>
+                        <option value="MECHANICAL">MECHANICAL</option>
+                    </select>
+                    </div> 
+
+                    <div class="col-sm">
+                          <select class="form-control" id="batchp"  style="width:100%">
+                            <option>Select Batch</option>
+                          </select>
+                    </div>   
+
+                     <div class="col-sm">
+                        <select class="form-control" required id="semp" style="width:100%" onchange="getsubj()">
+                        <option value="">Select Semester</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        </select>
+                    </div>
+                     
+                    <div class="col-sm">
+                          <select class="form-control" id="subjectp"  style="width:100%">
+                            <option>Select Subject</option>
+                          </select>
+                    </div>                    
+                </div>
+
+                <br>
+             <label>Enter subject final internal marks(40m): </label>  <input type="text" id="internalmarks" style="height: 35px" required autocomplete="off" maxlength="2">
+            <br><br>
+            <button type="submit"  class="btn btn-primary shadow" value="Submit" id="predict" onclick="predict()">Predict</button>
+            <br>
+
+            <span id="loadp">  Predicting... Please wait. <img src="{{ url_for('static',filename='styles/loader.gif') }}" style="width:26px;height:26px;" /></span>
+            <br>
+             <center>
+             <h3 id="gradep">
+
+            </h3>
+            </center>
+            </div>
+         
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<br>
+    <script src="{{ url_for('static',filename='styles/assets/js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='styles/assets/bootstrap/js/bootstrap.min.js') }}"></script>
+
+<script>
+    function reset()
+    {
+        document.getElementById('sem').selectedIndex=0
+          document.getElementById('section').selectedIndex=0
+          document.getElementById('batch').selectedIndex=0
+    }
+    function getsec(value,v)
+    {
+         var batchop="<option value=''>Select Batch</option>"
+             for(var y = 2017;y <= 2100;y++)
+             {
+            batchop+="<option value='"+(y+'-'+(y+4))+"'>"+(y+'-'+(y+4))+"</option>"
+             document.getElementById(v).innerHTML=batchop
+            }
+        if (value!=""){
+            var br=value
+            var sectionop="<option value=''>Select Section</option>"
+            if (br=="CSE")
+            {
+                var cs=['B1','B2','B3','B4','B5','B6','B7','B8','B9','B10','B11','B12','B13','B14','B15','B16','B17','B18','B19','B20']
+                for(var i=0;i<cs.length;i++)
+                {
+                    sectionop+="<option value='"+cs[i]+"'>"+cs[i]+"</option>"
+                }
+                document.getElementById('section').innerHTML=sectionop
+            }
+            else if(br=="ECE")
+            {
+              var cs=['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10']
+                for(var i=0;i<cs.length;i++)
+                {
+                    sectionop+="<option value='"+cs[i]+"'>"+cs[i]+"</option>"
+                }
+                document.getElementById('section').innerHTML=sectionop
+            }
+            else if(br=="IT")
+            {
+              var cs=['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10']
+                for(var i=0;i<cs.length;i++)
+                {
+                    sectionop+="<option value='"+cs[i]+"'>"+cs[i]+"</option>"
+                }
+                document.getElementById('section').innerHTML=sectionop
+            }
+            else if(br=="CIVIL")
+            {
+              var cs=['G1','G2','G3','G4','G5','G6','G7','G8','G9','G10']
+                for(var i=0;i<cs.length;i++)
+                {
+                    sectionop+="<option value='"+cs[i]+"'>"+cs[i]+"</option>"
+                }
+                document.getElementById('section').innerHTML=sectionop
+            }
+            else if(br=="MECHANICAL")
+            {
+              var cs=['H1','H2','H3','H4','H5','H6','H7','H8','H9','H10']
+                for(var i=0;i<cs.length;i++)
+                {
+                    sectionop+="<option value='"+cs[i]+"'>"+cs[i]+"</option>"
+                }
+                document.getElementById('section').innerHTML=sectionop
+            }
+        }
+    }
+    function gen() {
+        var endroll = document.getElementById('rollnum').value;
+        var section = document.getElementById('section').value;
+        var flag;
+        if (section.length == 2) {
+            var s = section.slice(1, 2);
+            var e = endroll.slice(8, 9);
+            if (s == e) {
+                flag = 1;
+            } else {
+                flag = 0;
+            }
+        } else {
+            var s = section.slice(1, 3);
+            var e = endroll.slice(7, 9);
+            if (s == e) {
+                flag = 1;
+            } else {
+                flag = 0;
+            }
+        }
+        if (flag == 1) {
+            if (confirm('Please confirm that you have entered the ending roll number correct -> ' + endroll)) {
+                $("#load").show(0);
+                $('#done').hide(0);
+                $('#completed').hide();
+                var branch = document.getElementById('branch').value;
+                var sem = document.getElementById('sem').value;
+                var batch = document.getElementById('batch').value;
+                var missnum=document.getElementById('missnum').value;
+                if (branch && sem && batch && section) {
+                if (endroll.length == 12) {
+
+                        $("#submit").prop("disabled", "true");
+                        $("#rollnum").prop("disabled", "true");
+                        $.ajax({
+
+                            url: "generate",
+                            method: "POST",
+                            data: {sem: sem, branch: branch, batch: batch, sec: section, endroll: endroll,missnum:missnum},
+                            cache: false,
+                            success: function (response) {
+                                $("#load").hide(2100);
+                                $('#done').show();
+                                $('#done').html(response);
+                                $('#completed').show();
+                            }
+                        });
+                    } else {
+                        $('#completed').hide();
+                        $("#load").hide(0);
+                         alert("You have not entered the full 12 digit number or You have entered a string. Please Check and try again. ")
+
+                    }
+                } else {
+                    $('#completed').hide();
+                    $("#load").hide(0);
+                   alert("Please Select All Options");
+                }
+            }
+        }
+        else
+        {
+            alert('Oops Section and Endroll does not match');
+        }
+    }
+$('#list a').on('click', function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+
+});
+
+/* prediction js*/
+function getsubj()
+{
+    var batch = document.getElementById('batchp').value
+    var branch = document.getElementById('branchp').value
+    var sem = document.getElementById('semp').value
+    var section='';
+    var subop="<option value=''>Loading...</option>"
+    document.getElementById('subjectp').innerHTML=subop
+    if(branch && batch && sem)
+    {
+        $.ajax({
+                url: "/getsubject",
+                method: "POST",
+                data: {batch: batch, section: section, branch: branch,sem:sem},
+                cache: false,
+                success: function (res) {
+                    if(res!='Data Not Found.Please Generate..') {
+                        var s = JSON.parse(res);
+                        var subop="<option value=''>Select Subject</option>"
+                        for (var d = 0; d < s.length; d++) {
+                            subop += "<option value='" + s[d] + "'>" + s[d] + "</option>"
+                        }
+                         document.getElementById('subjectp').innerHTML=subop
+                    }
+                    else
+                    {
+                        alert(res);
+                        var sectionop="<option value=''>Not found</option>"
+                        document.getElementById('subjectp').innerHTML=subop
+                    }
+
+                }
+            });
+
+    }
+
+}
+function predict()
+{
+     var batchp = document.getElementById('batchp').value
+    var branchp = document.getElementById('branchp').value
+    var subjp=document.getElementById('subjectp').value
+    var semp = document.getElementById('semp').value
+    var internalmarks=document.getElementById('internalmarks').value
+    if(batchp && branchp && semp && internalmarks)
+    {
+        $('#loadp').show();
+
+         $.ajax({
+                url: "/gpredict",
+                method: "POST",
+                data: {batchp: batchp, imarks:internalmarks, branchp: branchp,semp:semp,subjp:subjp},
+                cache: false,
+                success: function (res) {
+                    $('#loadp').hide();
+                    $('#gradep').html('Predicted grade is: '+ res);
+                }
+            });
+    }
+    else
+    {
+        alert('Please select all options');
+    }
+
+}
+</script>
+</body>
+
+</html>

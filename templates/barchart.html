@@ -1,0 +1,117 @@
+<html>
+<head>
+</head>
+<body>
+  <table class="barcharttable" style="border: none;">
+            <tr style="border: none;">
+              <td id="chart1" style="border: none;"></td>
+              <td id="chart2" style="border: none;"></td>
+          </tr>
+          <tr style="border: none;">
+              <td id="chart3" style="border: none;"></td>
+              <td id="chart4" style="border: none;"></td>
+          </tr>
+          <tr style="border: none;">
+              <td id="chart5" style="border: none;"></td>
+              <td id="chart6" style="border: none;"></td>
+          </tr>
+          <tr style="border: none;">
+              <td id="chart7" style="border: none;"></td>
+              <td id="chart8" style="border: none;"></td>
+          </tr>
+          <tr style="border: none;">
+              <td id="chart9" style="border: none;"></td>
+              <td id="chart10" style="border: none;"></td>
+          </tr>
+    </table>
+
+<script type = "text/javascript" src = "https://www.gstatic.com/charts/loader.js"></script>
+<script type = "text/javascript">
+var ele=0;
+var lielem=['chart1','chart2','chart3','chart4','chart5','chart6','chart7','chart8','chart9','chart10'];
+function drawChart(p,sub,stdpass,passper) {
+var data = google.visualization.arrayToDataTable([
+          ['Grade','Count',{ role: 'style' }],
+          ['O',p[0],'#4285f4'],
+          ['A+',p[1],'#4285f4'],
+          ['A',p[2],'#4285f4'],
+          ['B+',p[3],'#4285f4'],
+          ['B',p[4],'#4285f4'],
+          ['C',p[5],'#4285f4'],
+          ['P',p[6],'#4285f4'],
+          ['F',p[7],'#4285f4'],
+          ['No Result',{{ nores }},'#4285f4'],
+          ['Number of students passed',stdpass,'#4285f4'],
+          ['Total Strength',{{ totalstrength }},'#4285f4'],
+          ['Pass%',passper,'#4285f4'],
+        ]);
+
+var options =
+{
+	title:sub,
+    'width':800,
+    'height':400,
+    'margin':0,
+       titleTextStyle: {
+            color: "#000",
+            fontSize:20,},
+
+        hAxis: {
+            title:'Grade',
+            slantedText:true,
+            slantedangle:90,
+
+        titleTextStyle: {
+            color: "#000",
+            fontName: "Arial",
+            fontSize: 16,
+            italic: false,},
+
+        textStyle: {
+               color: '#000',
+               fontSize: 13,
+               fontName: "Arial",},
+    },
+
+    vAxis: {
+    	title:'Count',
+    	titleTextStyle: {
+            color: "#000",
+            fontName: "Arial",
+            fontSize: 16,
+            italic: false,},
+        textStyle: {
+                color: '#000',
+                fontSize: 13,
+                fontName: 'Arial',},
+    },
+
+   bar: { groupWidth: '70%' },
+   legend: { position: "none" },
+};
+
+var container = document.getElementById(lielem[ele]).appendChild(document.createElement('span'));
+var chart = new google.visualization.ColumnChart(container);
+chart.draw(data, options);
+ele=ele+1;
+}
+
+</script>
+
+
+<script>
+google.charts.load('current', {packages: ['corechart']});
+
+{% for t in subj %}
+   google.charts.setOnLoadCallback(function() {
+       {% set u = loop.index - 1 %}
+       var stdp= {{stdpass[u]|tojson}};
+       var pas={{ passperc[u]|tojson }};
+       var su={{ subj[u]|tojson }};
+     drawChart( {{ gradecount[t]}},su,stdp,pas)
+ });
+{% endfor %}
+</script>
+
+</body>
+</html>

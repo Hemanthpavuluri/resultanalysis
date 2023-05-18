@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+    <script type = "text/javascript" src = "https://www.gstatic.com/charts/loader.js"></script>
+
+</head>
+<div id="totalsem">
+<table border="1">
+     <thead>
+     <td style="background-color:#FAD7A0">Roll Number</td>
+     <td style="background-color:#FAD7A0">Name</td>
+     {% for row in subj %}
+     <td style="background-color:#FAD7A0">{{ row }}</td>
+     {% endfor %}
+     <td style="background-color:#FAD7A0">SGPA</td>
+     <td style="background-color:#FAD7A0">CGPA</td>
+     </thead>
+     {% for row in li %}
+     <tr>
+         <td>{{ row['Regdno'] }}</td>
+         <td>{{ row ['Name'] }}</td>
+         {% for r in range(0,len) %}
+         <td>{{ row['Result'][r]['Course_grade'] }}</td>
+         {% endfor %}
+         <td>{{ row['GPA'] }}</td>
+         <td>{{ row['CGPA'] }}</td>
+     </tr>
+     {% endfor %}
+ </table>
+<br>
+<br>
+
+<table border="1">
+<thead>
+<td style="text-align: center;background-color:#FAD7A0" colspan="100%">
+    Subject Wise Grade Analysis</td>
+</thead>
+<thead>
+    <td style="background-color:#FAD7A0">Grade</td>
+{% for row in subj %}
+     <td style="background-color:#FAD7A0">{{ row }}</td>
+{% endfor %}
+</thead>
+<tr>
+    <td>O</td>
+        {% for j in subj %}
+             <td>{{ gradecount[j][0] }}</td>
+        {% endfor %}
+</tr>
+<tr>
+    <td>A+</td>
+        {% for j in subj %}
+             <td>{{ gradecount[j][1] }}</td>
+        {% endfor %}
+</tr>
+<tr>
+    <td>A</td>
+        {% for j in subj %}
+             <td>{{ gradecount[j][2] }}</td>
+        {% endfor %}
+</tr>
+<tr>
+    <td>B+</td>
+        {% for j in subj %}
+             <td>{{ gradecount[j][3] }}</td>
+        {% endfor %}
+</tr>
+<tr>
+    <td>B</td>
+        {% for j in subj %}
+             <td>{{ gradecount[j][4] }}</td>
+        {% endfor %}
+</tr>
+<tr>
+    <td>C</td>
+        {% for j in subj %}
+             <td>{{ gradecount[j][5] }}</td>
+        {% endfor %}
+</tR>
+<tr>
+    <td>P</td>
+        {% for j in subj %}
+             <td>{{ gradecount[j][6] }}</td>
+        {% endfor %}
+</tr>
+<tr>
+    <td>F</td>
+        {% for j in subj %}
+             <td>{{ gradecount[j][7] }}</td>
+        {% endfor %}
+</tr>
+<tr>
+    <td>No Result</td>
+    {% for j in subj %}
+             <td>{{ nores}}</td>
+        {% endfor %}
+
+</tr>
+<tr>
+<td>Number of Students Pass</td>
+    {% for h in stdpass %}
+    <td>{{ h }}</td>
+    {% endfor %}
+</tr>
+<tr>
+    <td>Total Strength</td>
+    {% for h in subj %}
+    <td>{{ totalstrength }}</td>
+    {% endfor %}
+</tr>
+<tr>
+    <td>Pass %</td>
+    {% for h in passperc %}
+    <td>{{ h }}</td>
+    {% endfor %}
+</tr>
+</table>
+</div>
+<div id="bargraph">
+
+
+</div>
+<script src="{{ url_for('static',filename='styles/assets/js/jquery.min.js') }}"></script>
+<script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+
+<script>
+function barchart()
+{
+ $.ajax({
+url: "charts",
+method: "POST",
+data:{branch:'{{br}}'},
+async:false,
+success: function (response) {
+    $('#bargraph').html(response);
+}
+});
+}
+
+barchart();
+
+function totalviewdownload()
+{
+    var sem = document.getElementById('sem').value
+    var section = document.getElementById('section').value
+    var branch = document.getElementById('branch').value
+    $("#totalsem").table2excel({
+        filename: sem+"Sem"+"_"+section+"_"+branch+"totalview.xls"
+    });
+}
+</script>
+
+</body>
+</html>

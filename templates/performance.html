@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+</head>
+<body>
+<table border="1">
+     <thead>
+     <td style="background-color:#FAD7A0">Regdnumber</td>
+     <td style="background-color:#FAD7A0">SEM1</td>
+     <td style="background-color:#FAD7A0">SEM2</td>
+     <td style="background-color:#FAD7A0">SEM3</td>
+     <td style="background-color:#FAD7A0">SEM4</td>
+     <td style="background-color:#FAD7A0">SEM5</td>
+     <td style="background-color:#FAD7A0">SEM6</td>
+     <td style="background-color:#FAD7A0">SEM7</td>
+     <td style="background-color:#FAD7A0">SEM8</td>
+     </thead>
+    <tr>
+         <td>{{ std }}</td>
+        <td>{{ sperf[1] }}</td>
+        <td>{{ sperf[2] }}</td>
+        <td>{{ sperf[3] }}</td>
+        <td>{{ sperf[4] }}</td>
+        <td>{{ sperf[5] }}</td>
+        <td>{{ sperf[6] }}</td>
+        <td>{{ sperf[7] }}</td>
+        <td>{{ sperf[8] }}</td>
+    </tr>
+ </table>
+<br>
+<br>
+<div id="curve_chart" style="width: 1000px; height: 500px">
+
+</div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['SEMESTER','CGPA'],
+          ['SEM1', {% if sperf[1]!='' %} {{ sperf[1] }} {% else %} {{ l }}{% endif %}],
+          ['SEM2', {% if sperf[2]!='' %} {{ sperf[2] }} {% else %} {{ l }}{% endif %}],
+          ['SEM3' , {% if sperf[3]!='' %} {{ sperf[3] }} {% else %} {{ l }}{% endif %}],
+          [ 'SEM4', {% if sperf[4]!='' %} {{ sperf[4] }} {% else %} {{ l }}{% endif %}],
+          ['SEM5' , {% if sperf[5]!='' %} {{ sperf[5] }} {% else %} {{ l }}{% endif %}],
+          ['SEM6' , {% if sperf[6]!='' %} {{ sperf[6] }} {% else %} {{ l }}{% endif %}],
+          ['SEM7' , {% if sperf[7]!='' %} {{ sperf[7] }} {% else %} {{ l }}{% endif %}],
+          ['SEM8' , {% if sperf[8]!='' %} {{ sperf[8] }} {% else %} {{ l }}{% endif %}],
+        ]);
+
+        var options = {
+          title: 'Student Performance',
+          curveType: 'function',
+            pointsVisible: true	,
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+</body>
+</html>

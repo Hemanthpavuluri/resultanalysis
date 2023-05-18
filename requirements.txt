@@ -1,0 +1,5 @@
+dnspython
+pymongo
+bs4
+BeautifulSoup4
+requests
