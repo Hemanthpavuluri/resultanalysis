@@ -1,6 +1,8 @@
 import json
 from flask import Flask, render_template, request
 import pymongo
+import boto3
+from boto3.dynamodb.conditions import Key
 from bs4 import  BeautifulSoup
 import requests
 import ssl
@@ -10,8 +12,8 @@ import numpy as np
 
 app = Flask(__name__)
 
-client = pymongo.MongoClient("your mongodb connection string")
-db = client['Resultanalyze']
+client = boto3.resource('dynamodb')
+db = dynamodb.Table('Resultanalyze')
 
 
 @app.route('/')
